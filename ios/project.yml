@@ -17,6 +17,7 @@ settings:
     CODE_SIGN_IDENTITY: ""
     DEVELOPMENT_TEAM: ""
     GCC_C_LANGUAGE_STANDARD: gnu11
+    ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
 
 targets:
   ExtractXISO:
@@ -35,4 +36,5 @@ targets:
         CURRENT_PROJECT_VERSION: "1"
         SWIFT_OBJC_BRIDGING_HEADER: ExtractXISO/ExtractXISO-Bridging-Header.h
         INFOPLIST_FILE: ExtractXISO/Info.plist
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         SUPPORTS_MACCATALYST: NO

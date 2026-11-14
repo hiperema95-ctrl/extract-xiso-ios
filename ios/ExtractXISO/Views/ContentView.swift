@@ -992,9 +992,11 @@ struct ContentView: View {
 
     private var emptyStateView: some View {
         VStack(spacing: 20) {
-            Image(systemName: "opticaldisc.fill")
-                .font(.system(size: 64))
-                .foregroundColor(.green)
+            Image("HeaderIcon")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 84, height: 84)
+                .cornerRadius(18)
 
             Text(l10n.emptyTitle)
                 .font(.title2.bold())

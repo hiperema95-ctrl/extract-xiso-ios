@@ -857,9 +857,11 @@ export default function App() {
                     : 'border-slate-800 bg-[#111827]/70 hover:border-slate-700 hover:bg-[#111827]'
                 }`}
               >
-                <div className="w-16 h-16 rounded-2xl bg-[#107C10]/20 border border-[#22C55E]/30 flex items-center justify-center mb-5">
-                  <Disc className="w-8 h-8 text-[#22C55E]" />
-                </div>
+                <img
+                  src="/app-icon.png"
+                  alt="Extract-XISO"
+                  className="w-20 h-20 rounded-2xl shadow-lg mb-5 object-contain"
+                />
                 <h1 className="text-xl sm:text-2xl font-bold text-white font-display mb-2">
                   {t.emptyTitle}
                 </h1>
