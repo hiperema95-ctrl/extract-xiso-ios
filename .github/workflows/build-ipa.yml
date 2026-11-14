@@ -1,0 +1,65 @@
+name: Build Unsigned iOS IPA (Extract-XISO)
+
+on:
+  push:
+    branches: [ main, master ]
+    tags: [ 'v*' ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build-unsigned-ipa:
+    name: Build Extract-XISO Unsigned IPA
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install XcodeGen
+        run: |
+          if ! command -v xcodegen &> /dev/null; then
+            brew install xcodegen
+          fi
+
+      - name: Generate Xcode Project
+        working-directory: ios
+        run: xcodegen generate
+
+      - name: Build Unsigned iOS App (arm64)
+        working-directory: ios
+        run: |
+          xcodebuild clean build \
+            -project ExtractXISO.xcodeproj \
+            -scheme ExtractXISO \
+            -configuration Release \
+            -sdk iphoneos \
+            -derivedDataPath build \
+            ARCHS="arm64" \
+            ONLY_ACTIVE_ARCH=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            DEVELOPMENT_TEAM=""
+
+      - name: Package Unsigned .ipa Archive
+        working-directory: ios
+        run: |
+          mkdir -p Payload
+          APP_PATH=$(find build -name "ExtractXISO.app" -type d | head -n 1)
+          if [ -z "$APP_PATH" ]; then
+            echo "Errore: ExtractXISO.app non trovato"
+            exit 1
+          fi
+          cp -R "$APP_PATH" Payload/ExtractXISO.app
+          zip -r9 ExtractXISO-unsigned.ipa Payload
+          ls -lh ExtractXISO-unsigned.ipa
+
+      - name: Upload Unsigned IPA Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ExtractXISO-unsigned-ipa
+          path: ios/ExtractXISO-unsigned.ipa
+          if-no-files-found: error
+          retention-days: 90

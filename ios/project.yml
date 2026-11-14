@@ -1,0 +1,38 @@
+name: ExtractXISO
+options:
+  bundleIdPrefix: com.xboxdev
+  deploymentTarget:
+    iOS: "15.0"
+  xcodeVersion: "15.0"
+  generateEmptyDirectories: true
+
+settings:
+  base:
+    SWIFT_VERSION: "5.9"
+    IPHONEOS_DEPLOYMENT_TARGET: "15.0"
+    TARGETED_DEVICE_FAMILY: "1,2"
+    ENABLE_BITCODE: NO
+    CODE_SIGNING_ALLOWED: NO
+    CODE_SIGNING_REQUIRED: NO
+    CODE_SIGN_IDENTITY: ""
+    DEVELOPMENT_TEAM: ""
+    GCC_C_LANGUAGE_STANDARD: gnu11
+
+targets:
+  ExtractXISO:
+    type: application
+    platform: iOS
+    deploymentTarget: "15.0"
+    sources:
+      - path: ExtractXISO
+    info:
+      path: ExtractXISO/Info.plist
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.xboxdev.extractxiso
+        PRODUCT_NAME: ExtractXISO
+        MARKETING_VERSION: "1.0.0"
+        CURRENT_PROJECT_VERSION: "1"
+        SWIFT_OBJC_BRIDGING_HEADER: ExtractXISO/ExtractXISO-Bridging-Header.h
+        INFOPLIST_FILE: ExtractXISO/Info.plist
+        SUPPORTS_MACCATALYST: NO

@@ -1,0 +1,6 @@
+{
+  "name": "Extract-XISO",
+  "description": "Utility per ispezionare, estrarre, ottimizzare e creare immagini disco Xbox (XDVDFS / XISO) direttamente da iPhone e browser.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
