@@ -1,6 +1,6 @@
 <div align="center">
 
-# 💿 Extract-XISO for iOS & Web
+# 💿 Extract-XISO for iOS
 
 **Native iOS (`arm64`) and Web utility to inspect, extract, optimize, and build Xbox & Xbox 360 (`XDVDFS` / `XISO`) disc images directly on iPhone, iPad, and modern browsers.**
 
