@@ -69,6 +69,7 @@ export default function App() {
     return 'system';
   });
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
+  const [settingsTab, setSettingsTab] = useState<'language' | 'credits'>('language');
   const [langSearchQuery, setLangSearchQuery] = useState<string>('');
 
   const resolvedLang = useMemo(
@@ -633,7 +634,10 @@ export default function App() {
           </button>
           <button
             type="button"
-            onClick={() => setIsSettingsOpen(true)}
+            onClick={() => {
+              setSettingsTab('language');
+              setIsSettingsOpen(true);
+            }}
             className="py-1 text-slate-400 hover:text-white transition-colors flex items-center gap-1.5 whitespace-nowrap shrink-0 cursor-pointer"
             title={t.settingsTitle}
           >
@@ -656,7 +660,7 @@ export default function App() {
         </div>
       </header>
 
-      {/* Settings / Language Modal */}
+      {/* Settings Modal (Language & Selectable Credits) */}
       {isSettingsOpen && (
         <div
           className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4"
@@ -666,11 +670,12 @@ export default function App() {
             className="w-full max-w-lg rounded-2xl bg-[#111827] border border-slate-800 shadow-2xl overflow-hidden flex flex-col max-h-[85vh]"
             onClick={(e) => e.stopPropagation()}
           >
+            {/* Modal Header */}
             <div className="px-5 py-4 border-b border-slate-800 flex items-center justify-between">
               <div className="flex items-center gap-2.5">
-                <Globe className="w-5 h-5 text-[#22C55E]" />
+                <Settings className="w-5 h-5 text-[#22C55E]" />
                 <h2 className="text-base font-bold text-white font-display">
-                  {t.settingsTitle} · {t.languageLabel}
+                  {t.settingsTitle}
                 </h2>
               </div>
               <button
@@ -683,70 +688,187 @@ export default function App() {
               </button>
             </div>
 
-            <div className="p-4 border-b border-slate-800 bg-[#090D16]/50">
-              <div className="relative">
-                <Search className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-                <input
-                  type="text"
-                  value={langSearchQuery}
-                  onChange={(e) => setLangSearchQuery(e.target.value)}
-                  placeholder={t.searchLanguagePlaceholder}
-                  className="w-full min-h-[42px] pl-10 pr-8 py-2 rounded-xl bg-[#090D16] border border-slate-800 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-[#22C55E]"
-                />
-                {langSearchQuery && (
-                  <button
-                    type="button"
-                    onClick={() => setLangSearchQuery('')}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
-                )}
-              </div>
+            {/* Settings Navigation Tabs: Language vs Credits */}
+            <div className="px-5 pt-3 border-b border-slate-800 bg-[#090D16]/60 flex items-center gap-6 text-xs sm:text-sm font-semibold">
+              <button
+                type="button"
+                onClick={() => setSettingsTab('language')}
+                className={`pb-3 border-b-2 transition-colors flex items-center gap-2 cursor-pointer ${
+                  settingsTab === 'language'
+                    ? 'border-[#22C55E] text-white'
+                    : 'border-transparent text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                <Globe className="w-4 h-4 text-[#22C55E]" />
+                <span>{t.languageLabel}</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setSettingsTab('credits')}
+                className={`pb-3 border-b-2 transition-colors flex items-center gap-2 cursor-pointer ${
+                  settingsTab === 'credits'
+                    ? 'border-[#22C55E] text-white'
+                    : 'border-transparent text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                <FileCode className="w-4 h-4 text-[#22C55E]" />
+                <span>Credits</span>
+              </button>
             </div>
 
-            <div className="divide-y divide-slate-800/60 overflow-y-auto flex-1">
-              {filteredLanguages.map((lang) => {
-                const isSelected = languageChoice === lang.code;
-                const isSystem = lang.code === 'system';
+            {settingsTab === 'language' ? (
+              <>
+                <div className="p-4 border-b border-slate-800 bg-[#090D16]/50">
+                  <div className="relative">
+                    <Search className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    <input
+                      type="text"
+                      value={langSearchQuery}
+                      onChange={(e) => setLangSearchQuery(e.target.value)}
+                      placeholder={t.searchLanguagePlaceholder}
+                      className="w-full min-h-[42px] pl-10 pr-8 py-2 rounded-xl bg-[#090D16] border border-slate-800 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-[#22C55E]"
+                    />
+                    {langSearchQuery && (
+                      <button
+                        type="button"
+                        onClick={() => setLangSearchQuery('')}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
+                </div>
 
-                return (
-                  <button
-                    key={lang.code}
-                    type="button"
-                    onClick={() => {
-                      setLanguageChoice(lang.code);
-                      setIsSettingsOpen(false);
-                    }}
-                    className={`w-full min-h-[52px] px-5 py-3 flex items-center justify-between gap-3 text-left transition-colors cursor-pointer ${
-                      isSelected
-                        ? 'bg-emerald-950/30 text-white'
-                        : 'hover:bg-slate-800/50 text-slate-200'
-                    }`}
-                  >
-                    <div className="min-w-0">
-                      <div className="text-sm font-semibold flex items-center gap-2">
-                        <span>{lang.nativeName}</span>
-                        {isSystem && systemDetectedOption && (
-                          <span className="text-xs font-normal text-emerald-400">
-                            ({systemDetectedOption.nativeName})
-                          </span>
+                <div className="divide-y divide-slate-800/60 overflow-y-auto flex-1">
+                  {filteredLanguages.map((lang) => {
+                    const isSelected = languageChoice === lang.code;
+                    const isSystem = lang.code === 'system';
+
+                    return (
+                      <button
+                        key={lang.code}
+                        type="button"
+                        onClick={() => {
+                          setLanguageChoice(lang.code);
+                          setIsSettingsOpen(false);
+                        }}
+                        className={`w-full min-h-[52px] px-5 py-3 flex items-center justify-between gap-3 text-left transition-colors cursor-pointer ${
+                          isSelected
+                            ? 'bg-emerald-950/30 text-white'
+                            : 'hover:bg-slate-800/50 text-slate-200'
+                        }`}
+                      >
+                        <div className="min-w-0">
+                          <div className="text-sm font-semibold flex items-center gap-2">
+                            <span>{lang.nativeName}</span>
+                            {isSystem && systemDetectedOption && (
+                              <span className="text-xs font-normal text-emerald-400">
+                                ({systemDetectedOption.nativeName})
+                              </span>
+                            )}
+                          </div>
+                          <div className="text-xs text-slate-400">
+                            {isSystem ? t.systemLanguageDesc : lang.englishName}
+                          </div>
+                        </div>
+
+                        {isSelected && (
+                          <div className="w-6 h-6 rounded-full bg-[#107C10] text-white flex items-center justify-center shrink-0">
+                            <Check className="w-3.5 h-3.5" />
+                          </div>
                         )}
-                      </div>
-                      <div className="text-xs text-slate-400">
-                        {isSystem ? t.systemLanguageDesc : lang.englishName}
+                      </button>
+                    );
+                  })}
+
+                  {/* Selectable Credits Row at the bottom of Settings */}
+                  <button
+                    type="button"
+                    onClick={() => setSettingsTab('credits')}
+                    className="w-full min-h-[54px] px-5 py-3.5 flex items-center justify-between gap-3 text-left bg-[#090D16]/60 hover:bg-slate-800/60 text-slate-200 transition-colors cursor-pointer"
+                  >
+                    <div className="flex items-center gap-3">
+                      <FileCode className="w-4 h-4 text-[#22C55E]" />
+                      <div>
+                        <div className="text-sm font-semibold text-white">
+                          Credits & Open Source Licenses
+                        </div>
+                        <div className="text-xs text-slate-400">
+                          About the iOS port, software stack & authors
+                        </div>
                       </div>
                     </div>
-
-                    {isSelected && (
-                      <div className="w-6 h-6 rounded-full bg-[#107C10] text-white flex items-center justify-center shrink-0">
-                        <Check className="w-3.5 h-3.5" />
-                      </div>
-                    )}
+                    <ChevronRight className="w-4 h-4 text-slate-500" />
                   </button>
-                );
-              })}
-            </div>
+                </div>
+              </>
+            ) : (
+              /* English Credits View */
+              <div className="p-5 overflow-y-auto flex-1 space-y-5 text-sm text-slate-300 leading-relaxed">
+                <div className="p-4 rounded-xl bg-[#090D16] border border-slate-800 space-y-2">
+                  <div className="text-xs font-mono uppercase tracking-wider text-emerald-400">
+                    Open Source iOS Port
+                  </div>
+                  <h3 className="text-base font-bold text-white font-display">
+                    Extract-XISO for iOS & Web
+                  </h3>
+                  <p className="text-xs text-slate-300 leading-relaxed">
+                    This application is <strong className="text-white">Open Source</strong> software released under the{' '}
+                    <strong className="text-white">BSD 4-Clause License</strong>. It is the native{' '}
+                    <strong className="text-white">iOS port</strong> and web companion of the official{' '}
+                    <span className="font-mono text-emerald-400">extract-xiso</span> command-line utility from:
+                  </p>
+                  <a
+                    href="https://github.com/xboxdev/extract-xiso"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 text-xs font-mono text-emerald-400 hover:text-emerald-300 underline break-all"
+                  >
+                    https://github.com/xboxdev/extract-xiso
+                  </a>
+                  <p className="text-xs text-slate-400 pt-1">
+                    Originally created by <span className="font-mono text-slate-300">in &lt;in@fishtank.com&gt;</span> and maintained by the{' '}
+                    <strong className="text-slate-200">XboxDev</strong> open-source community.
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-xl bg-[#090D16] border border-slate-800 space-y-2.5">
+                  <div className="text-xs font-mono uppercase tracking-wider text-emerald-400">
+                    Software & Technologies Used
+                  </div>
+                  <ul className="space-y-2 text-xs text-slate-300">
+                    <li>
+                      <strong className="text-white">Google AI Studio:</strong> Engineered, architected, and built using Google AI Studio.
+                    </li>
+                    <li>
+                      <strong className="text-white">Swift 5 &amp; SwiftUI:</strong> Native iOS user interface, localization engine, and state management.
+                    </li>
+                    <li>
+                      <strong className="text-white">UIKit (UIDocumentPickerViewController):</strong> Zero-copy in-place file access and directory export compatible with iOS Files and LiveContainer.
+                    </li>
+                    <li>
+                      <strong className="text-white">C11 &amp; POSIX File I/O (XISOBridge):</strong> Native 64-bit binary XDVDFS filesystem parser, AVL directory tree walker, Redump XGD1/XGD2/XGD3 partition detector, and <span className="font-mono">.xbe</span> media patcher.
+                    </li>
+                    <li>
+                      <strong className="text-white">XcodeGen &amp; GitHub Actions:</strong> Automated cloud build pipeline (<span className="font-mono">macos-14</span>, <span className="font-mono">xcodebuild</span>) for generating the unsigned <span className="font-mono">.ipa</span> package.
+                    </li>
+                    <li>
+                      <strong className="text-white">React 19, TypeScript &amp; Vite:</strong> Cross-platform browser-based XDVDFS inspector, ISO rewriter (<span className="font-mono">-r</span>), ISO creator (<span className="font-mono">-c</span>), and streaming ZIP64 archive builder.
+                    </li>
+                    <li>
+                      <strong className="text-white">Tailwind CSS &amp; Lucide Icons:</strong> Dark interface styling and vector iconography.
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="pt-2 pb-1 text-center">
+                  <p className="text-sm font-semibold text-white tracking-wide">
+                    Created with ❤️ by hiperema
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -857,11 +979,9 @@ export default function App() {
                     : 'border-slate-800 bg-[#111827]/70 hover:border-slate-700 hover:bg-[#111827]'
                 }`}
               >
-                <img
-                  src="/app-icon.png"
-                  alt="Extract-XISO"
-                  className="w-20 h-20 rounded-2xl shadow-lg mb-5 object-contain"
-                />
+                <div className="w-16 h-16 rounded-2xl bg-[#107C10]/20 border border-[#22C55E]/30 flex items-center justify-center mb-5">
+                  <Disc className="w-8 h-8 text-[#22C55E]" />
+                </div>
                 <h1 className="text-xl sm:text-2xl font-bold text-white font-display mb-2">
                   {t.emptyTitle}
                 </h1>

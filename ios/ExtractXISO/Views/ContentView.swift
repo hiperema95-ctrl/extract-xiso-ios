@@ -820,6 +820,60 @@ final class XISOViewModel: ObservableObject {
     }
 }
 
+struct CreditsView: View {
+    var body: some View {
+        List {
+            Section(header: Text("Open Source & Upstream Project")) {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Extract-XISO for iOS")
+                        .font(.headline)
+                        .foregroundColor(.white)
+                    Text("This application is Open Source software released under the BSD 4-Clause License. It is the native iOS port of the official extract-xiso command-line utility.")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                    if let url = URL(string: "https://github.com/xboxdev/extract-xiso") {
+                        Link("https://github.com/xboxdev/extract-xiso", destination: url)
+                            .font(.caption.monospaced())
+                            .foregroundColor(.green)
+                    }
+                    Text("Originally created by in <in@fishtank.com> and maintained by the XboxDev open-source community.")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+                .padding(.vertical, 4)
+            }
+
+            Section(header: Text("Software & Technologies Used")) {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("• Google AI Studio — Engineered and developed with Google AI Studio")
+                    Text("• Swift 5 & SwiftUI — Native iOS interface & multi-language localization")
+                    Text("• UIKit DocumentPicker — Zero-copy in-place ISO access & LiveContainer compatibility")
+                    Text("• C11 & POSIX File I/O (XISOBridge) — 64-bit binary XDVDFS parser, Redump XGD1/XGD2/XGD3 partition detector, and .xbe media flag patcher")
+                    Text("• XcodeGen & GitHub Actions — Automated macOS cloud build pipeline for unsigned .ipa generation")
+                    Text("• React, TypeScript, Vite & Tailwind CSS — Companion web application & streaming ZIP64 archive engine")
+                }
+                .font(.caption)
+                .foregroundColor(.secondary)
+                .padding(.vertical, 4)
+            }
+
+            Section {
+                HStack {
+                    Spacer()
+                    Text("Created with ❤️ by hiperema")
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundColor(.white)
+                    Spacer()
+                }
+                .padding(.vertical, 4)
+            }
+        }
+        .navigationTitle("Credits")
+        .navigationBarTitleDisplayMode(.inline)
+        .preferredColorScheme(.dark)
+    }
+}
+
 struct SettingsLanguageSheet: View {
     @Binding var selectedLanguage: String
     @Environment(\.dismiss) private var dismiss
@@ -862,6 +916,23 @@ struct SettingsLanguageSheet: View {
                                     Image(systemName: "checkmark.circle.fill")
                                         .foregroundColor(.green)
                                 }
+                            }
+                        }
+                    }
+                }
+
+                Section(header: Text("About")) {
+                    NavigationLink(destination: CreditsView()) {
+                        HStack(spacing: 12) {
+                            Image(systemName: "info.circle.fill")
+                                .foregroundColor(.green)
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("Credits")
+                                    .font(.body.weight(.semibold))
+                                    .foregroundColor(.primary)
+                                Text("Open Source, XboxDev & Software Stack")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
                             }
                         }
                     }
@@ -992,11 +1063,9 @@ struct ContentView: View {
 
     private var emptyStateView: some View {
         VStack(spacing: 20) {
-            Image("HeaderIcon")
-                .resizable()
-                .scaledToFit()
-                .frame(width: 84, height: 84)
-                .cornerRadius(18)
+            Image(systemName: "opticaldisc.fill")
+                .font(.system(size: 64))
+                .foregroundColor(.green)
 
             Text(l10n.emptyTitle)
                 .font(.title2.bold())
