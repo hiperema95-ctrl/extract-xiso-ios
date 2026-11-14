@@ -2,10 +2,10 @@
 
 # 💿 Extract-XISO for iOS
 
-**Native iOS (`arm64`) utility to inspect and extract Xbox & Xbox 360 (`XDVDFS` / `XISO`) disc images directly on iPhone and iPad.**
+**Native iOS (`arm64`) utility to inspect and extract Xbox & Xbox 360 (`XDVDFS` / `XISO`) disc images directly on iPhone.**
 
 [![Build Unsigned iOS IPA](https://github.com/hiperema95-ctrl/extract-xiso-ios/actions/workflows/build-ipa.yml/badge.svg)](https://github.com/hiperema95-ctrl/extract-xiso-ios/actions/workflows/build-ipa.yml)
-[![Platform](https://img.shields.io/badge/Platform-iOS%2015.0%2B%20%7C%20iPadOS%2015.0%2B-107C10?logo=apple)](https://github.com/hiperema95-ctrl/extract-xiso-ios)
+[![Platform](https://img.shields.io/badge/Tested%20on-iPhone%2016%20Pro%20(LiveContainer)-107C10?logo=apple)](https://github.com/hiperema95-ctrl/extract-xiso-ios)
 [![License](https://img.shields.io/badge/License-BSD%204--Clause-blue.svg)](LICENSE.TXT)
 
 </div>
@@ -14,9 +14,13 @@
 
 ## 📖 Overview
 
-**extract-xiso-ios** is a native iOS and iPadOS port of [`XboxDev/extract-xiso`](https://github.com/XboxDev/extract-xiso), ported and structured with the assistance of **Google AI Studio**.
+**extract-xiso-ios** is a native iOS port of [`XboxDev/extract-xiso`](https://github.com/XboxDev/extract-xiso), converted and structured with the assistance of **Google AI Studio**.
 
-Built with **SwiftUI** and a 64-bit **C bridge (`XISOBridge.c`)**, it allows you to open, browse, and extract multi-gigabyte Xbox and Xbox 360 `.iso` / `.xiso` disc images (`> 4 GB`) directly on your iPhone or iPad without needing a PC. It integrates natively with the iOS **Files** app (`UIDocumentPickerViewController`, `UISupportsDocumentBrowser`, and `UIFileSharingEnabled`).
+Built with **SwiftUI** and a 64-bit **C bridge (`XISOBridge.c`)**, it allows you to open, browse, and extract multi-gigabyte Xbox and Xbox 360 `.iso` / `.xiso` disc images (`> 4 GB`) directly on your iPhone without needing a PC. It integrates directly with the iOS **Files** app (`UIDocumentPickerViewController`).
+
+> ### ⚠️ Important Compatibility Notice
+> * **Tested Device:** Currently tested **exclusively on iPhone 16 Pro** (not tested on iPad).
+> * **Execution Environment:** Currently works **only inside [LiveContainer](https://github.com/LiveContainer/LiveContainer)**. Standard standalone sideloading outside of LiveContainer is not supported at this time.
 
 ---
 
@@ -50,30 +54,24 @@ The native 64-bit C engine (`XISOBridge.c`) automatically detects the game parti
 
 ---
 
-## 📲 Installation (Sideloading)
+## 📲 Installation (LiveContainer Only)
 
-### Option A: Download from Releases (Recommended)
-1. Go to the [**Releases**](../../releases) page and download the latest `.ipa` file.
-2. Sideload the unsigned `.ipa` on your iPhone or iPad (iOS / iPadOS `15.0+`) using your preferred sideloading tool:
-   * **SideStore** / **AltStore**
-   * **Feather** / **eSign** / **Sideloadly**
-   * **LiveContainer** / **TrollStore**
+This application requires **LiveContainer** to run properly:
 
-### Option B: Download from GitHub Actions Artifacts
-This repository includes an automated GitHub Actions workflow that compiles the unsigned iOS `.ipa` on macOS:
-1. Open the [**Actions**](../../actions) tab at the top of this repository.
-2. Select the latest successful **Build Unsigned iOS IPA (Extract-XISO)** run.
-3. Scroll down to **Artifacts** and download `ExtractXISO-unsigned-ipa`.
+1. Download the latest `ExtractXISO-unsigned.ipa` from the [**Releases**](../../releases) page (or grab the artifact from the [**Actions**](../../actions) tab).
+2. Open **LiveContainer** on your iPhone.
+3. Tap the **`+`** button in LiveContainer and import `ExtractXISO-unsigned.ipa`.
+4. Launch **Extract-XISO** directly from inside **LiveContainer**.
 
 ---
 
-## 🚀 How to Use on iPhone / iPad
+## 🚀 How to Use on iPhone
 
-1. Open **Extract-XISO** and tap **Open XISO File** (or the disc icon in the top bar).
+1. Launch **Extract-XISO** inside **LiveContainer** and tap **Open XISO File** (or the disc icon in the top bar).
 2. Select your `.iso` or `.xiso` image from the iOS **Files** app.
 3. Browse the folders or use the search bar to find specific files:
    * **Single File:** Tap the download button next to any file to extract and save it.
-   * **Full Game Extraction:** Tap **Extract All to Folder (-x)** at the bottom to unpack the entire disc image into `On My iPhone > Extract-XISO` (or export the extracted folder anywhere via the Files picker).
+   * **Full Game Extraction:** Tap **Extract All to Folder (-x)** at the bottom to unpack the entire disc image and save the extracted folder via the iOS **Files** picker.
 
 ---
 
@@ -103,4 +101,7 @@ xcodebuild clean build \
   CODE_SIGN_IDENTITY="" \
   DEVELOPMENT_TEAM=""
 
-# 4. Package into an unsigned
+# 4. Package into an unsigned .ipa
+mkdir -p Payload
+cp -R "$(find build -name 'ExtractXISO.app' -type d | head -n 1)" Payload/ExtractXISO.app
+zip -r9 ExtractXISO-unsigned.ipa Payload
